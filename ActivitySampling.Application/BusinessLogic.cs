@@ -53,7 +53,7 @@ namespace ActivitySampling.Application
             LastActivity = e.Description;
             IStorage storage = new CsvFileStorage();
             storage.SaveActivity(e.TimeStamp, Interval, e.Description);
-            Console.WriteLine($@" ... saved ({DateTime.Now:t})");
+            Console.WriteLine($@" ... saved ({DateTime.Now:t}) [press 'h' for help]");
         }
         private void View_RaiseApplicationCloseEvent(object sender, EventArgs e)
         {
