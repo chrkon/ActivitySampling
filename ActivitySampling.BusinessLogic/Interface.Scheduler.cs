@@ -16,7 +16,7 @@ namespace ActivitySampling.Interfaces
 
     public interface IQuestionScheduler
     {
-        bool IsRunning { get; set; }
+        bool IsRunning { get; }
         Task Start(TimeSpan interval);
         void Stop();
         event EventHandler<SchedulerEventArgs> RaiseSchedulerEvent;

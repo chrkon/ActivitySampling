@@ -14,7 +14,6 @@ namespace ActivitySampling.Application
         public TimeSpan Interval { get; set; }
         public DateTime ActualTime { get => DateTime.Now; }
         public bool IsRunning => schedule.IsRunning;
-
         public string LastActivity { get; set; }
 
         private IView view;

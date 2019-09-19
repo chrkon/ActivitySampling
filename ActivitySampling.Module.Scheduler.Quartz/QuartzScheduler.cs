@@ -8,7 +8,8 @@ namespace ActivitySampling.Module.Scheduler.Quartz
 {
     public class QuartzScheduler : IQuestionScheduler
     {
-        public bool IsRunning { get; set; }
+        public bool IsRunning { get; private set; }
+
         public event EventHandler<SchedulerEventArgs> RaiseSchedulerEvent;
 
         public async Task Start(TimeSpan interval)
@@ -36,7 +37,7 @@ namespace ActivitySampling.Module.Scheduler.Quartz
                 .SetJobData(new JobDataMap{{"event-handler", RaiseSchedulerEvent}})
                 .Build();
 
-            // Trigger the job to run now, and then every 40 seconds
+            // Trigger the job to run now, and then every "interval" 
             ITrigger trigger = TriggerBuilder.Create()
               .WithIdentity("Trigger", "ActivitySampling")
               .StartNow()
