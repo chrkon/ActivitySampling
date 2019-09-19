@@ -153,7 +153,7 @@ namespace ActivitySampling.Module.View.CLI
         private void ShowHelpText()
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("'x' = exit; 'h' = help");
+            Console.WriteLine("'x' = exit");
             Console.ResetColor();
         }
 
