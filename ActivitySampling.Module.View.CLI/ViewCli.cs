@@ -10,7 +10,7 @@ namespace ActivitySampling.Module.View.CLI
     {
         public ViewCLI()
         {
-            TimeToAnswer = TimeSpan.FromSeconds(20.0);
+            TimeToAnswer = TimeSpan.FromSeconds(30.0);
         }
 
         public TimeSpan TimeToAnswer { get; set; }
@@ -36,6 +36,7 @@ namespace ActivitySampling.Module.View.CLI
         {
             string actualActivity = string.Empty;
             DateTime timeOut = DateTime.Now + timeToAnswer;
+            DateTime nextBeep = DateTime.Now + TimeSpan.FromSeconds(5);
 
             var cl = Console.CursorLeft;
             var ct = Console.CursorTop;
@@ -45,6 +46,12 @@ namespace ActivitySampling.Module.View.CLI
 
             while (Console.KeyAvailable == false && DateTime.Now < timeOut)
             {
+                if (DateTime.Now > nextBeep)
+                {
+                    nextBeep = DateTime.Now + TimeSpan.FromSeconds(5);
+                    Console.Beep();
+                }
+
                 Console.SetCursorPosition(cl, ct);
                 Console.Write($"{Question}");
                 Console.ForegroundColor = ConsoleColor.DarkGreen;
