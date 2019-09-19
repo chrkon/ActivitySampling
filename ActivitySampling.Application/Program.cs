@@ -24,7 +24,7 @@ namespace ActivitySampling.Application
         static async Task RunLogic(string[] args)
         {
             var bl = new BusinessLogic();
-            await bl.Run(TimeSpan.FromSeconds(30));
+            await bl.Run(TimeSpan.FromMinutes(20));
 
             while (bl.IsRunning)
             {
