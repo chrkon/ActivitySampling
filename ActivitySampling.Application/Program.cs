@@ -23,8 +23,19 @@ namespace ActivitySampling.Application
 
         static async Task RunLogic(string[] args)
         {
+            TimeSpan Interval = TimeSpan.FromSeconds(30);
+
+            if (args.GetUpperBound(0) >= 0)
+            {
+                var ok = int.TryParse(args[0], out int min);
+                if (ok)
+                {
+                    Interval = TimeSpan.FromMinutes(min);
+                }
+            }
+
             var bl = new BusinessLogic();
-            await bl.Run(TimeSpan.FromSeconds(30));
+            await bl.Run(Interval);
 
             while (bl.IsRunning)
             {
