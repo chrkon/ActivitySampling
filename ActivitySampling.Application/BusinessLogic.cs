@@ -58,6 +58,9 @@ namespace ActivitySampling.Application
         private void View_RaiseApplicationCloseEvent(object sender, EventArgs e)
         {
             Console.WriteLine(@" ... closing ");
+            IStorage storage = new CsvFileStorage();
+            string ApplicationStoppedMessage = "Activity Sampling halted";
+            storage.SaveActivity(DateTime.Now,TimeSpan.Zero, ApplicationStoppedMessage);
             schedule.Stop();
         }
 
