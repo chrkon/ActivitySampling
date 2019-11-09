@@ -34,6 +34,7 @@ namespace ActivitySampling.Application
         internal async Task Run(TimeSpan timeSpan)
         {
             Interval = timeSpan;
+            Console.WriteLine($@"Starting ... ({DateTime.Now:t}) [press 'h' for help]");
             await schedule.Start(Interval);
         }
 
@@ -53,7 +54,7 @@ namespace ActivitySampling.Application
             LastActivity = e.Description;
             IStorage storage = new CsvFileStorage();
             storage.SaveActivity(e.TimeStamp, Interval, e.Description);
-            Console.WriteLine($@" ... saved ({DateTime.Now:t}) [press 'h' for help]");
+            Console.WriteLine($@" ... saved ({DateTime.Now:t})");
         }
         private void View_RaiseApplicationCloseEvent(object sender, EventArgs e)
         {

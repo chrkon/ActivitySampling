@@ -11,6 +11,7 @@ namespace ActivitySampling.Module.View.CLI
         public ViewCLI()
         {
             TimeToAnswer = TimeSpan.FromSeconds(30.0);
+            StartMenue();
         }
 
         public TimeSpan TimeToAnswer { get; set; }

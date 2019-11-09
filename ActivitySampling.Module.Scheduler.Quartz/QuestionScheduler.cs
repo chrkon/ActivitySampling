@@ -37,10 +37,11 @@ namespace ActivitySampling.Module.Scheduler.Question
                 .SetJobData(new JobDataMap{{"event-handler", RaiseSchedulerEvent}})
                 .Build();
 
-            // Trigger the job to run now, and then every "interval" 
+            // Trigger the job to run in "Interval/2" minutes, and then every "interval" 
+            DateTimeOffset firstTrigger = DateTime.UtcNow.AddMinutes(interval.TotalMinutes / 2);
             ITrigger trigger = TriggerBuilder.Create()
               .WithIdentity("Trigger", "ActivitySampling")
-              .StartNow()
+              .StartAt(firstTrigger)
               .WithSimpleSchedule(x => x
                   .WithInterval(interval)
                   .RepeatForever())
