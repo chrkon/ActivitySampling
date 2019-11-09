@@ -1,6 +1,6 @@
 using System;
 using ActivitySampling.Interfaces;
-using ActivitySampling.Module.Scheduler.Quartz;
+using ActivitySampling.Module.Scheduler.Question;
 using NUnit.Framework;
 
 namespace ActivitySampling.Tests
@@ -15,14 +15,14 @@ namespace ActivitySampling.Tests
         [Test]
         public void Scheduler_GetSchedulerSingletonInstance()
         {
-            IQuestionScheduler sut = new QuartzScheduler();
+            IQuestionScheduler sut = new QuestionScheduler();
             Assert.That(sut != null);
         }
 
         [Test]
         public void Scheduler_Call_Start()
         {
-            IQuestionScheduler sut = new QuartzScheduler();
+            IQuestionScheduler sut = new QuestionScheduler();
             sut.Start(TimeSpan.FromMinutes(20));
             Assert.That(sut.IsRunning == true);
         }
@@ -30,7 +30,7 @@ namespace ActivitySampling.Tests
         [Test]
         public void Scheduler_Call_Stop()
         {
-            IQuestionScheduler sut = new QuartzScheduler();
+            IQuestionScheduler sut = new QuestionScheduler();
             sut.Stop();
             Assert.That(sut.IsRunning == false);
         }

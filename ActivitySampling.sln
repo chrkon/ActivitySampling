@@ -9,11 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActivitySampling.Interfaces
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActivitySampling.Application", "ActivitySampling.Application\ActivitySampling.Application.csproj", "{6FC1BF98-6024-44EE-B00D-3620B5520CA6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActivitySampling.Module.Scheduler.Quartz", "ActivitySampling.Module.Scheduler.Quartz\ActivitySampling.Module.Scheduler.Quartz.csproj", "{43211719-DAC0-4FFA-8B0F-7AA433C68619}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActivitySampling.Module.Scheduler.Question", "ActivitySampling.Module.Scheduler.Quartz\ActivitySampling.Module.Scheduler.Question.csproj", "{43211719-DAC0-4FFA-8B0F-7AA433C68619}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActivitySampling.Module.Storage.CSVFile", "ActivitySampling.Module.Storage.CSVFile\ActivitySampling.Module.Storage.CSVFile.csproj", "{A5DB82D8-D4C3-4928-A38B-AE9A29ED4194}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActivitySampling.Module.View.CLI", "ActivitySampling.Module.View.CLI\ActivitySampling.Module.View.CLI.csproj", "{513CCF88-3F74-4AC0-B0AB-AF6940D8BC33}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActivitySampling.Module.View.CLI", "ActivitySampling.Module.View.CLI\ActivitySampling.Module.View.CLI.csproj", "{513CCF88-3F74-4AC0-B0AB-AF6940D8BC33}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

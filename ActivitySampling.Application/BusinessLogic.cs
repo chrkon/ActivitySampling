@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using ActivitySampling.Interfaces;
-using ActivitySampling.Module.Scheduler.Quartz;
+using ActivitySampling.Module.Scheduler.Question;
 using ActivitySampling.Module.Storage.CSVFile;
 using ActivitySampling.Module.View.CLI;
 
@@ -21,7 +21,7 @@ namespace ActivitySampling.Application
 
         public BusinessLogic()
         {
-            schedule = new QuartzScheduler();
+            schedule = new QuestionScheduler();
             view = new ViewCLI(); 
 
             schedule.RaiseSchedulerEvent += Schedule_RaiseSchedulerEvent;

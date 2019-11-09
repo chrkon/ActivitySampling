@@ -3,7 +3,7 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Threading;
 using System.Threading.Tasks;
 using ActivitySampling.Interfaces;
-using ActivitySampling.Module.Scheduler.Quartz;
+using ActivitySampling.Module.Scheduler.Question;
 using ActivitySampling.Module.Storage.CSVFile;
 
 namespace ActivitySampling.Application

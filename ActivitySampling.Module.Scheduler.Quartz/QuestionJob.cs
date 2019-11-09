@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using ActivitySampling.Interfaces;
 using Quartz;
 
-namespace ActivitySampling.Module.Scheduler.Quartz
+namespace ActivitySampling.Module.Scheduler.Question
 {
-    public class QuartzJob : IJob
+    public class QuestionJob : IJob
     {
         public async Task Execute(IJobExecutionContext context)
         { 

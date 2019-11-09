@@ -4,9 +4,9 @@ using Quartz.Impl;
 using System;
 using System.Threading.Tasks;
 
-namespace ActivitySampling.Module.Scheduler.Quartz
+namespace ActivitySampling.Module.Scheduler.Question
 {
-    public class QuartzScheduler : IQuestionScheduler
+    public class QuestionScheduler : IQuestionScheduler
     {
         public bool IsRunning { get; private set; }
 
@@ -32,7 +32,7 @@ namespace ActivitySampling.Module.Scheduler.Quartz
             await sched.Start();
 
             // define the job and tie it to our HelloJob class
-            IJobDetail job = JobBuilder.Create<QuartzJob>()
+            IJobDetail job = JobBuilder.Create<QuestionJob>()
                 .WithIdentity("Job", "ActivitySampling")
                 .SetJobData(new JobDataMap{{"event-handler", RaiseSchedulerEvent}})
                 .Build();

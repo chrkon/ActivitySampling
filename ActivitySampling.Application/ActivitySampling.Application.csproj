@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ActivitySampling.BusinessLogic\ActivitySampling.Interfaces.csproj" />
-    <ProjectReference Include="..\ActivitySampling.Module.Scheduler.Quartz\ActivitySampling.Module.Scheduler.Quartz.csproj" />
+    <ProjectReference Include="..\ActivitySampling.Module.Scheduler.Quartz\ActivitySampling.Module.Scheduler.Question.csproj" />
     <ProjectReference Include="..\ActivitySampling.Module.Storage.CSVFile\ActivitySampling.Module.Storage.CSVFile.csproj" />
     <ProjectReference Include="..\ActivitySampling.Module.View.CLI\ActivitySampling.Module.View.CLI.csproj" />
   </ItemGroup>
