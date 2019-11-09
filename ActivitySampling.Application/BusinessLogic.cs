@@ -35,6 +35,10 @@ namespace ActivitySampling.Application
         {
             Interval = timeSpan;
             Console.WriteLine($@"Starting ... ({DateTime.Now:t}) [press 'h' for help]");
+            IStorage storage = new CsvFileStorage();
+            string ApplicationStartMessage = $@"Activitiy Sampling started ({DateTime.Now:t})";
+            storage.SaveActivity(DateTime.Now,TimeSpan.Zero, ApplicationStartMessage);
+
             await schedule.Start(Interval);
         }
 
