@@ -3,10 +3,5 @@
     <BuildProcessArchitecture>x86</BuildProcessArchitecture>
     <CopyReferencedAssembliesToWorkspace>False</CopyReferencedAssembliesToWorkspace>
     <HiddenComponentWarnings />
-    <IgnoredTests>
-      <NamedTestSelector>
-        <TestName>ActivitySampling.Tests.AppLogicViewTests.View_CallAskForActivity</TestName>
-      </NamedTestSelector>
-    </IgnoredTests>
   </Settings>
 </ProjectConfiguration>

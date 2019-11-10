@@ -25,4 +25,9 @@ namespace ActivitySampling.Interfaces
         event EventHandler RaiseApplicationCloseEvent;
     }
 
+
+    public interface ICommandLineInterface
+    {
+        string ShowQuestion(string question, string lastActivity, DateTime timeStampOfQuestion, TimeSpan workingInterval, TimeSpan timeToAnswer);
+    }
 }
