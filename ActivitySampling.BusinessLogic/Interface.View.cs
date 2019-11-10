@@ -8,9 +8,11 @@ namespace ActivitySampling.Interfaces
     {
         public string Description { get; private set; }
         public DateTime TimeStamp { get; private set; }
-        public ActivityAddedEventArgs(DateTime time, string activityDescription)
+        public TimeSpan Interval { get; private set; }
+        public ActivityAddedEventArgs(DateTime time, TimeSpan interval, string activityDescription)
         {
             TimeStamp = time;
+            Interval = interval;
             Description = activityDescription;
         }
     }

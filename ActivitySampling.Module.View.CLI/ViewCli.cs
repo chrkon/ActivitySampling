@@ -10,7 +10,8 @@ namespace ActivitySampling.Module.View.CLI
     {
         public ViewCLI()
         {
-            TimeToAnswer = TimeSpan.FromSeconds(30.0);
+            TimeToAnswer = TimeSpan.FromSeconds(10.0);
+            TimeStampOfLastAnswer = DateTime.Now;
             CLI = new CommandLineInterface();
         }
 
@@ -35,7 +36,6 @@ namespace ActivitySampling.Module.View.CLI
             HandleAnswer(actualActivity);
             ActivateMenu();
         }
-
         private void HandleAnswer(string actualActivity)
         {
             if (String.IsNullOrWhiteSpace(actualActivity))
@@ -45,8 +45,33 @@ namespace ActivitySampling.Module.View.CLI
             }
             else
             {
+                TimeSpan interval = DateTime.Now - TimeStampOfLastAnswer;
                 TimeStampOfLastAnswer = DateTime.Now;
-                OnRaiseActivityAddedEvent(new ActivityAddedEventArgs(TimeStampOfLastAnswer, actualActivity));
+                OnRaiseActivityAddedEvent(new ActivityAddedEventArgs(TimeStampOfLastAnswer, interval, actualActivity));
+            }
+        }
+
+        public void AskForBelatedActivity(DateTime timeStampOfQuestion, string lastActivity)
+        {
+            DeactivateMenu();
+            var actualActivity = CLI.ShowQuestion(Question, lastActivity, timeStampOfQuestion, TimeToAnswer);
+            HandleBelatedAnswer(actualActivity);
+            ActivateMenu();
+        }
+
+        private void HandleBelatedAnswer(string belatedActivity)
+        {
+            if (String.IsNullOrWhiteSpace(belatedActivity))
+            {
+                // Leerer String = keine Tätigkeit = kein Eintrag
+                OnRaiseNoActivityEvent(new EventArgs());
+            }
+            else
+            {
+                TimeSpan interval = DateTime.Now - TimeStampOfLastAnswer;
+                DateTime TimeStampOfBelatedAnswer = TimeStampOfLastAnswer + interval /2;
+                TimeStampOfLastAnswer = DateTime.Now;
+                OnRaiseActivityAddedEvent(new ActivityAddedEventArgs(TimeStampOfBelatedAnswer, interval, belatedActivity));
             }
         }
 
@@ -81,8 +106,7 @@ namespace ActivitySampling.Module.View.CLI
                     switch (key)
                     {
                         case AddKey:
-                            var lastInterval = DateTime.Now - TimeStampOfLastAnswer;
-                            AskForActivity(DateTime.Now, "");
+                            AskForBelatedActivity(DateTime.Now, "");
                             break;
                         case CancelKey:
                             OnRaiseApplicationCloseEvent(new EventArgs());
