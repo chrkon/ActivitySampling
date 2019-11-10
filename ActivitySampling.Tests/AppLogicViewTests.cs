@@ -15,7 +15,7 @@ namespace ActivitySampling.Tests
             Assert.NotNull(sut);
         }
 
-        [Fact(Skip = "Dieser Test funktioniert nicht. Grund noch unbekannt, CKo, 9.11.2019")]
+        [Fact/*(Skip = "Dieser Test funktioniert nicht. Grund noch unbekannt, CKo, 9.11.2019")*/]
         public async Task View_CallAskForActivity()
         {
             var sut = new ViewCLI();
@@ -23,9 +23,9 @@ namespace ActivitySampling.Tests
             {
                 Assert.NotEmpty(e.Description); 
                 Assert.Equal("No car",e.Description);
-            };
+            };            
             sut.AskForActivity(DateTime.Now, TimeSpan.FromMinutes(20), "No Activity");
-            await Task.Delay(500);
+            await Task.Delay(1000);
         }
 
     }

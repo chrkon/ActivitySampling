@@ -29,6 +29,7 @@ namespace ActivitySampling.Application
             view.RaiseActivityAddedEvent += View_RaiseActivityAddedEvent;
             view.RaiseNoActivityEvent += View_RaiseNoActivityEvent;
             view.RaiseApplicationCloseEvent += View_RaiseApplicationCloseEvent;
+            view.ActivateMenu();
         }
 
         internal async Task Run(TimeSpan timeSpan)
@@ -62,6 +63,7 @@ namespace ActivitySampling.Application
         }
         private void View_RaiseApplicationCloseEvent(object sender, EventArgs e)
         {
+            view.DeactivateMenu();
             Console.WriteLine(@" ... closing ");
             IStorage storage = new CsvFileStorage();
             string ApplicationStoppedMessage = "Activity Sampling halted";

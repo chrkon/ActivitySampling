@@ -11,7 +11,6 @@ namespace ActivitySampling.Module.View.CLI
         public ViewCLI()
         {
             TimeToAnswer = TimeSpan.FromSeconds(30.0);
-            StartMenue();
         }
 
         public TimeSpan TimeToAnswer { get; set; }
@@ -26,10 +25,10 @@ namespace ActivitySampling.Module.View.CLI
 
         public void AskForActivity(DateTime timeStampOfQuestion, TimeSpan interval, string lastActivity)
         {
-            StopMenue();
+            DeactivateMenu();
             var actualActivity = ShowQuestion(lastActivity, timeStampOfQuestion, interval, TimeToAnswer);
             HandleAnswer(actualActivity);
-            StartMenue();
+            ActivateMenu();
         }
 
         private const string Question = "Was machst Du gerade?";
@@ -114,18 +113,16 @@ namespace ActivitySampling.Module.View.CLI
             }
         }
 
-        private void StartMenue()
+        public void ActivateMenu()
         {
+            cts?.Cancel();
             cts = new CancellationTokenSource();
             MenueTask = Task.Factory.StartNew(() => MenueHandler(cts.Token), cts.Token);
         }
 
-        private void StopMenue()
+        public void DeactivateMenu()
         {
-            if (cts != null)
-            {
-                cts.Cancel();
-            }
+            cts?.Cancel();
         }
 
         private const ConsoleKey CancelKey = ConsoleKey.X;

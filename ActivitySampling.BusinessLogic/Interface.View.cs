@@ -18,6 +18,8 @@ namespace ActivitySampling.Interfaces
     public interface IView
     {
         void AskForActivity(DateTime timeStampOfQuestion, TimeSpan interval, string lastActivity);
+        void ActivateMenu();
+        void DeactivateMenu();
         event EventHandler RaiseNoActivityEvent;
         event EventHandler<ActivityAddedEventArgs> RaiseActivityAddedEvent;
         event EventHandler RaiseApplicationCloseEvent;
