@@ -17,7 +17,7 @@ namespace ActivitySampling.Interfaces
 
     public interface IView
     {
-        void AskForActivity(DateTime timeStampOfQuestion, TimeSpan interval, string lastActivity);
+        void AskForActivity(DateTime timeStampOfQuestion, string lastActivity);
         void ActivateMenu();
         void DeactivateMenu();
         event EventHandler RaiseNoActivityEvent;
@@ -28,6 +28,9 @@ namespace ActivitySampling.Interfaces
 
     public interface ICommandLineInterface
     {
-        string ShowQuestion(string question, string lastActivity, DateTime timeStampOfQuestion, TimeSpan workingInterval, TimeSpan timeToAnswer);
+        bool KeyAvailable { get; }
+        ConsoleKeyInfo ReadKey(bool intercept = false);
+        string ReadLine();
+        string ShowQuestion(string question, string lastActivity, DateTime timeStampOfQuestion, TimeSpan timeToAnswer);
     }
 }

@@ -10,7 +10,7 @@ namespace ActivitySampling.Application
 {
     class Program
     {
-        private static readonly TimeSpan IntervalWithoutCommandLineArg = TimeSpan.FromSeconds(30);
+        private static readonly TimeSpan IntervalWithoutCommandLineArg = TimeSpan.FromSeconds(35);
 
         [STAThread]
         static void Main(string[] args)

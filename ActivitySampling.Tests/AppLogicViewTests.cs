@@ -24,21 +24,26 @@ namespace ActivitySampling.Tests
             AutoResetEvent _eventIsCalled = new AutoResetEvent(false);
             sut.RaiseNoActivityEvent += (sender,e ) => _eventIsCalled.Set();
 
-            sut.AskForActivity(DateTime.Now, TimeSpan.FromMinutes(20), "");
+            sut.AskForActivity(DateTime.Now, "");
             Assert.True(_eventIsCalled.WaitOne());
         }
 
         [Fact]
-        public async Task View_CallAskForActivity_WithKeyInput()
+        public async Task View_CallAskForActivity_WithInput()
         {
+            string receivedActivity = string.Empty;
             var sut = new ViewCLI();
             sut.TimeToAnswer = TimeSpan.FromMilliseconds(500);
             sut.CLI = new CommandLineInterfaceFake();
             AutoResetEvent _eventIsCalled = new AutoResetEvent(false);
-            sut.RaiseNoActivityEvent += (sender,e ) => _eventIsCalled.Set();
+            sut.RaiseActivityAddedEvent += (sender,e ) => {
+                receivedActivity = e.Description;
+                _eventIsCalled.Set();
+            };
 
-            sut.AskForActivity(DateTime.Now, TimeSpan.FromMinutes(20), ""); 
-            Assert.True(_eventIsCalled.WaitOne());
+            string expectedActivity = "last Activity";
+            sut.AskForActivity(DateTime.Now, expectedActivity); 
+            Assert.Equal(expectedActivity, receivedActivity);
         }
 
     }

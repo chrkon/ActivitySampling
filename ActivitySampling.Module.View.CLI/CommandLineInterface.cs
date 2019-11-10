@@ -7,7 +7,22 @@ namespace ActivitySampling.Module.View.CLI
 {
     public class CommandLineInterface : Interfaces.ICommandLineInterface
     {
-        public string ShowQuestion(string question, string lastActivity, DateTime timeStampOfQuestion, TimeSpan workingInterval, TimeSpan timeToAnswer)
+        public bool KeyAvailable
+        {
+            get { return Console.KeyAvailable; }
+        }
+
+        public ConsoleKeyInfo ReadKey(bool intercept = false)
+        {
+            return Console.ReadKey(intercept);
+        }
+
+        public string ReadLine()
+        {
+            return Console.ReadLine();
+        }
+
+        public string ShowQuestion(string question, string lastActivity, DateTime timeStampOfQuestion, TimeSpan timeToAnswer)
         {
             string actualActivity = string.Empty;
             DateTime timeOut = DateTime.Now + timeToAnswer;
@@ -19,7 +34,7 @@ namespace ActivitySampling.Module.View.CLI
             Console.Beep();
             Console.Beep();
 
-            while (Console.KeyAvailable == false && DateTime.Now < timeOut)
+            while (this.KeyAvailable == false && DateTime.Now < timeOut)
             {
                 if (DateTime.Now > nextBeep)
                 {
@@ -49,7 +64,7 @@ namespace ActivitySampling.Module.View.CLI
                 Console.SetCursorPosition(cl, ct);
                 Console.Write($"{question} ");
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                string answer = Console.ReadLine();
+                string answer = this.ReadLine();
                 if (String.IsNullOrWhiteSpace(answer))
                 {
                     actualActivity = lastActivity; // nur Enter gedrückt

@@ -37,15 +37,15 @@ namespace ActivitySampling.Application
             Interval = timeSpan;
             Console.WriteLine($@"Starting ... ({DateTime.Now:t}) [press 'h' for help]");
             IStorage storage = new CsvFileStorage();
-            string ApplicationStartMessage = $@"Activitiy Sampling started ({DateTime.Now:t})";
-            storage.SaveActivity(DateTime.Now,TimeSpan.Zero, ApplicationStartMessage);
+            string ApplicationStartMessage = $@"Activity Sampling started ({DateTime.Now:t})";
+            storage.SaveActivity(DateTime.Now, TimeSpan.Zero, ApplicationStartMessage);
 
             await schedule.Start(Interval);
         }
 
         private void Schedule_RaiseSchedulerEvent(object sender, SchedulerEventArgs e)
         {
-            view.AskForActivity(ActualTime, Interval, LastActivity);
+            view.AskForActivity(ActualTime, LastActivity);
         }
 
         private void View_RaiseNoActivityEvent(object sender, EventArgs e)
@@ -67,7 +67,7 @@ namespace ActivitySampling.Application
             Console.WriteLine(@" ... closing ");
             IStorage storage = new CsvFileStorage();
             string ApplicationStoppedMessage = "Activity Sampling halted";
-            storage.SaveActivity(DateTime.Now,TimeSpan.Zero, ApplicationStoppedMessage);
+            storage.SaveActivity(DateTime.Now, TimeSpan.Zero, ApplicationStoppedMessage);
             schedule.Stop();
         }
 

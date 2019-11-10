@@ -15,7 +15,7 @@ namespace ActivitySampling.Module.View.CLI
         }
 
         public TimeSpan TimeToAnswer { get; set; }
-        public DateTime TimeStampOfAnswer { get; set; }
+        public DateTime TimeStampOfLastAnswer { get; set; }
 
         public ICommandLineInterface CLI {get; set;}
 
@@ -28,10 +28,10 @@ namespace ActivitySampling.Module.View.CLI
 
         private const string Question = "Was machst Du gerade?";
 
-        public void AskForActivity(DateTime timeStampOfQuestion, TimeSpan interval, string lastActivity)
+        public void AskForActivity(DateTime timeStampOfQuestion, string lastActivity)
         {
             DeactivateMenu();
-            var actualActivity = CLI.ShowQuestion(Question, lastActivity, timeStampOfQuestion, interval, TimeToAnswer);
+            var actualActivity = CLI.ShowQuestion(Question, lastActivity, timeStampOfQuestion, TimeToAnswer);
             HandleAnswer(actualActivity);
             ActivateMenu();
         }
@@ -45,8 +45,8 @@ namespace ActivitySampling.Module.View.CLI
             }
             else
             {
-                TimeStampOfAnswer = DateTime.Now;
-                OnRaiseActivityAddedEvent(new ActivityAddedEventArgs(TimeStampOfAnswer, actualActivity));
+                TimeStampOfLastAnswer = DateTime.Now;
+                OnRaiseActivityAddedEvent(new ActivityAddedEventArgs(TimeStampOfLastAnswer, actualActivity));
             }
         }
 
@@ -64,33 +64,39 @@ namespace ActivitySampling.Module.View.CLI
 
         private const ConsoleKey CancelKey = ConsoleKey.X;
         private const ConsoleKey HelpKey = ConsoleKey.H;
+        private const ConsoleKey AddKey = ConsoleKey.A;
 
         private void MenueHandler(CancellationToken ct)
         {
             while (!ct.IsCancellationRequested)
             {
-                if (Console.KeyAvailable == false)
+                if (!CLI.KeyAvailable)
                 {
                     Thread.Sleep(250);
                 }
                 else
                 {
-                    ConsoleKeyInfo key = Console.ReadKey(true);
-                    var isExitKey = key.Key == CancelKey;
-                    var isHelpKey = key.Key == HelpKey;
-
-                    if (isExitKey)
+                    ConsoleKeyInfo cki = CLI.ReadKey(true);
+                    ConsoleKey key = cki.Key;
+                    switch (key)
                     {
-                        OnRaiseApplicationCloseEvent(new EventArgs());
-                        break;
-                    }
-                    else if (isHelpKey)
-                    {
-                        ShowHelpText();
-                    }
+                        case AddKey:
+                            var lastInterval = DateTime.Now - TimeStampOfLastAnswer;
+                            AskForActivity(DateTime.Now, "");
+                            break;
+                        case CancelKey:
+                            OnRaiseApplicationCloseEvent(new EventArgs());
+                            break;
+                        case HelpKey:
+                            ShowHelpText();
+                            break;
+                        default:
+                            Console.Beep(500,600);
+                            break;
+                    } 
                 }
             }
-        }
+         }
 
         private void ShowHelpText()
         {
