@@ -58,7 +58,7 @@ namespace ActivitySampling.Application
         {
             LastActivity = e.Description;
             IStorage storage = new CsvFileStorage();
-            storage.SaveActivity(e.TimeStamp, e.Interval, e.Description);
+            storage.SaveActivity(e.TimeOfEntry, e.Interval, e.Description);
             Console.WriteLine($@" ... saved ({DateTime.Now:t})");
         }
 

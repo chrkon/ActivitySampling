@@ -29,14 +29,14 @@ namespace ActivitySampling.Module.View.CLI
 
         private const string Question = "Was machst Du gerade?";
 
-        public void AskForActivity(DateTime timeStampOfQuestion, string lastActivity)
+        public void AskForActivity(DateTime timeStampOfQuestion, DateTime centerTimeOfInterval, TimeSpan interval, string lastActivity)
         {
             DeactivateMenu();
             var actualActivity = CLI.ShowQuestion(Question, lastActivity, timeStampOfQuestion, TimeToAnswer);
-            HandleAnswer(actualActivity);
+            HandleAnswer(actualActivity, timeStampOfQuestion, centerTimeOfInterval, interval);
             ActivateMenu();
         }
-        private void HandleAnswer(string actualActivity)
+        private void HandleAnswer(string actualActivity, DateTime timeStampOfQuestion, DateTime centerTimeOfInterval, TimeSpan interval)
         {
             if (String.IsNullOrWhiteSpace(actualActivity))
             {
@@ -45,21 +45,20 @@ namespace ActivitySampling.Module.View.CLI
             }
             else
             {
-                TimeSpan interval = DateTime.Now - TimeStampOfLastAnswer;
-                TimeStampOfLastAnswer = DateTime.Now;
-                OnRaiseActivityAddedEvent(new ActivityAddedEventArgs(TimeStampOfLastAnswer, interval, actualActivity));
+                TimeStampOfLastAnswer = timeStampOfQuestion;
+                OnRaiseActivityAddedEvent(new ActivityAddedEventArgs(timeStampOfQuestion, centerTimeOfInterval, interval, actualActivity));
             }
         }
 
-        public void AskForBelatedActivity(DateTime timeStampOfQuestion, string lastActivity)
+        public void AskForBelatedActivity(DateTime timeStampOfQuestion, DateTime centerTimeOfInterval, TimeSpan interval, string lastActivity)
         {
             DeactivateMenu();
             var actualActivity = CLI.ShowQuestion(Question, lastActivity, timeStampOfQuestion, TimeToAnswer);
-            HandleBelatedAnswer(actualActivity);
+            HandleBelatedAnswer(actualActivity, timeStampOfQuestion, centerTimeOfInterval, interval);
             ActivateMenu();
         }
 
-        private void HandleBelatedAnswer(string belatedActivity)
+        private void HandleBelatedAnswer(string belatedActivity, DateTime timeStampOfQuestion, DateTime centerTimeOfInterval, TimeSpan interval)
         {
             if (String.IsNullOrWhiteSpace(belatedActivity))
             {
@@ -68,10 +67,8 @@ namespace ActivitySampling.Module.View.CLI
             }
             else
             {
-                TimeSpan interval = DateTime.Now - TimeStampOfLastAnswer;
-                DateTime TimeStampOfBelatedAnswer = TimeStampOfLastAnswer + interval /2;
-                TimeStampOfLastAnswer = DateTime.Now;
-                OnRaiseActivityAddedEvent(new ActivityAddedEventArgs(TimeStampOfBelatedAnswer, interval, belatedActivity));
+                TimeStampOfLastAnswer = timeStampOfQuestion;
+                OnRaiseActivityAddedEvent(new ActivityAddedEventArgs(timeStampOfQuestion, centerTimeOfInterval, interval, belatedActivity));
             }
         }
 
@@ -143,6 +140,5 @@ namespace ActivitySampling.Module.View.CLI
         {
             RaiseApplicationCloseEvent?.Invoke(this, e);
         }
-
     }
 }
