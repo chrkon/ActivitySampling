@@ -101,7 +101,7 @@ namespace ActivitySampling.Module.View.CLI
         private void ShowHelpText()
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("'x' = exit");
+            CLI.WriteLine("'x' = exit");
             Console.ResetColor();
         }
 
@@ -120,5 +120,9 @@ namespace ActivitySampling.Module.View.CLI
             RaiseApplicationCloseEvent?.Invoke(this, e);
         }
 
+        public void Output(string message)
+        {
+            CLI.WriteLine(message);
+        }
     }
 }

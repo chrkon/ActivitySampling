@@ -17,6 +17,7 @@ namespace ActivitySampling.Interfaces
 
     public interface IView
     {
+        void Output(string message);
         void AskForActivity(DateTime timeStampOfQuestion, string lastActivity);
         void ActivateMenu();
         void DeactivateMenu();
@@ -32,5 +33,6 @@ namespace ActivitySampling.Interfaces
         ConsoleKeyInfo ReadKey(bool intercept = false);
         string ReadLine();
         string ShowQuestion(string question, string lastActivity, DateTime timeStampOfQuestion, TimeSpan timeToAnswer);
+        void WriteLine(string text);
     }
 }

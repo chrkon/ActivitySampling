@@ -19,13 +19,14 @@ namespace ActivitySampling.Tests
         [Fact]
         public async Task View_CallAskForActivity_noInput()
         {
-            var sut = new ViewCLI();
-            sut.TimeToAnswer = TimeSpan.FromMilliseconds(250);
             AutoResetEvent _eventIsCalled = new AutoResetEvent(false);
+            var sut = new ViewCLI();
+            sut.CLI = new CommandLineInterfaceFake();
+            sut.TimeToAnswer = TimeSpan.FromMilliseconds(250);
             sut.RaiseNoActivityEvent += (sender,e ) => _eventIsCalled.Set();
-
             sut.AskForActivity(DateTime.Now, "");
-            Assert.True(_eventIsCalled.WaitOne());
+            var ok = _eventIsCalled.WaitOne(300);
+            Assert.True(ok);
         }
 
         [Fact]

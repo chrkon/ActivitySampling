@@ -34,8 +34,8 @@ namespace ActivitySampling.Application
 
         internal async Task Run(TimeSpan timeSpan)
         {
+            view.Output($@"Starting ... ({DateTime.Now:t}) [press 'h' for help]");
             Interval = timeSpan;
-            Console.WriteLine($@"Starting ... ({DateTime.Now:t}) [press 'h' for help]");
             IStorage storage = new CsvFileStorage();
             string ApplicationStartMessage = $@"Activity Sampling started ({DateTime.Now:t})";
             storage.SaveActivity(DateTime.Now, TimeSpan.Zero, ApplicationStartMessage);
@@ -50,7 +50,7 @@ namespace ActivitySampling.Application
 
         private void View_RaiseNoActivityEvent(object sender, EventArgs e)
         {
-            Console.WriteLine("no Activity");
+            view.Output("no Activity");
             LastActivity = string.Empty;
         }
 
@@ -59,12 +59,12 @@ namespace ActivitySampling.Application
             LastActivity = e.Description;
             IStorage storage = new CsvFileStorage();
             storage.SaveActivity(e.TimeStamp, Interval, e.Description);
-            Console.WriteLine($@" ... saved ({DateTime.Now:t})");
+            view.Output($@" ... saved ({DateTime.Now:t})");
         }
         private void View_RaiseApplicationCloseEvent(object sender, EventArgs e)
         {
             view.DeactivateMenu();
-            Console.WriteLine(@" ... closing ");
+            view.Output(@" ... closing ");
             IStorage storage = new CsvFileStorage();
             string ApplicationStoppedMessage = "Activity Sampling halted";
             storage.SaveActivity(DateTime.Now, TimeSpan.Zero, ApplicationStoppedMessage);

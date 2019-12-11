@@ -27,5 +27,10 @@ namespace ActivitySampling.Tests
         {
             return lastActivity;
         }
+
+        public void WriteLine(string text)
+        {
+            // no action
+        }
     }
 }

@@ -22,6 +22,11 @@ namespace ActivitySampling.Module.View.CLI
             return Console.ReadLine();
         }
 
+        public void WriteLine(string text)
+        {
+            Console.WriteLine(text);
+        }
+
         public string ShowQuestion(string question, string lastActivity, DateTime timeStampOfQuestion, TimeSpan timeToAnswer)
         {
             string actualActivity = string.Empty;
