@@ -25,8 +25,8 @@ namespace ActivitySampling.Tests
             sut.TimeToAnswer = TimeSpan.FromMilliseconds(250);
             sut.RaiseNoActivityEvent += (sender,e ) => _eventIsCalled.Set();
             sut.AskForActivity(DateTime.Now, "");
-            var ok = _eventIsCalled.WaitOne(300);
-            Assert.True(ok);
+            var wasEventCalled = _eventIsCalled.WaitOne(300);
+            Assert.True(wasEventCalled);
         }
 
         [Fact]
@@ -45,6 +45,19 @@ namespace ActivitySampling.Tests
             string expectedActivity = "last Activity";
             sut.AskForActivity(DateTime.Now, expectedActivity); 
             Assert.Equal(expectedActivity, receivedActivity);
+        }
+
+        [Fact]
+        public async Task View_pressKeyX_AppEnds()
+        {
+            AutoResetEvent _eventIsCalled = new AutoResetEvent(false);
+            var sut = new ViewCLI();
+            sut.CLI = new CommandLineInterfaceFake();
+            sut.RaiseApplicationCloseEvent += (sender, e) => _eventIsCalled.Set();
+            sut.ActivateMenu();
+            ((CommandLineInterfaceFake)sut.CLI).NextInputKey = ConsoleKey.X;
+            var wasEventCalled = _eventIsCalled.WaitOne(1000);
+            Assert.True(wasEventCalled);
         }
 
     }

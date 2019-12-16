@@ -7,14 +7,14 @@ namespace ActivitySampling.Tests
 {
     public class CommandLineInterfaceFake : Interfaces.ICommandLineInterface
     {
-        public char? NextInputKey {get; set;}
+        public ConsoleKey? NextInputKey {get; set;}
         public string NextInputString {get; set;}
 
-        public bool KeyAvailable => NextInputKey.HasValue; 
+        public bool KeyAvailable => NextInputKey.HasValue;
 
         public ConsoleKeyInfo ReadKey(bool intercept = false)
         {
-            ConsoleKeyInfo cki = new ConsoleKeyInfo(NextInputKey.Value,ConsoleKey.NoName, false, false, false);
+            ConsoleKeyInfo cki = new ConsoleKeyInfo(char.MinValue, NextInputKey.Value, false, false, false) ;
             return cki;
         }
 
