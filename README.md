@@ -6,7 +6,7 @@ and store this information in a daily .csv file.
 The sampling rate can be defined in minutes as command line argument. Normally 20 minutes are OK.
 If the argument is missing the program starts in the demo mode and the Qustion appears every 30 Seconds. 
 
-The question is shown for 20 seconds.
+The question is shown for 30 seconds.
 If no answer is given from the user the default string "no activity" is used.
 If the user press a key the countdown is stopped. Now the User has more time to type in the actual activity.
 
