@@ -54,7 +54,7 @@ namespace ActivitySampling.Application
             LastActivity = string.Empty;
         }
 
-        private void View_RaiseActivityAddedEvent(object sender, ActivityAddedEventArgs e)
+        private void View_RaiseActivityAddedEvent(object sender, ActivityEventArgs e)
         {
             LastActivity = e.Description;
             IStorage storage = new CsvFileStorage();

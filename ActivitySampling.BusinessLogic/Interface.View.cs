@@ -4,11 +4,11 @@ using System.Text;
 
 namespace ActivitySampling.Interfaces
 {
-    public class ActivityAddedEventArgs : EventArgs
+    public class ActivityEventArgs : EventArgs
     {
         public string Description { get; private set; }
         public DateTime TimeStamp { get; private set; }
-        public ActivityAddedEventArgs(DateTime time, string activityDescription)
+        public ActivityEventArgs(DateTime time, string activityDescription)
         {
             TimeStamp = time;
             Description = activityDescription;
@@ -22,7 +22,7 @@ namespace ActivitySampling.Interfaces
         void ActivateMenu();
         void DeactivateMenu();
         event EventHandler RaiseNoActivityEvent;
-        event EventHandler<ActivityAddedEventArgs> RaiseActivityAddedEvent;
+        event EventHandler<ActivityEventArgs> RaiseActivityAddedEvent;
         event EventHandler RaiseApplicationCloseEvent;
     }
 
