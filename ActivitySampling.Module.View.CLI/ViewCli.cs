@@ -24,7 +24,7 @@ namespace ActivitySampling.Module.View.CLI
         public event EventHandler RaiseApplicationCloseEvent;
 
         private Task MenueTask = null;
-        private CancellationTokenSource cts;
+        private CancellationTokenSource _cts;
 
         private const string Question = "Was machst Du gerade?";
 
@@ -52,14 +52,14 @@ namespace ActivitySampling.Module.View.CLI
 
         public void ActivateMenu()
         {
-            cts?.Cancel();
-            cts = new CancellationTokenSource();
-            MenueTask = Task.Factory.StartNew(() => MenueHandler(cts.Token), cts.Token);
+            _cts?.Cancel();
+            _cts = new CancellationTokenSource();
+            MenueTask = Task.Factory.StartNew(() => MenueHandler(_cts.Token), _cts.Token);
         }
 
         public void DeactivateMenu()
         {
-            cts?.Cancel();
+            _cts?.Cancel();
         }
 
         private const ConsoleKey CancelKey = ConsoleKey.X;
