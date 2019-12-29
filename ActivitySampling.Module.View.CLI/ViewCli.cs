@@ -20,7 +20,7 @@ namespace ActivitySampling.Module.View.CLI
         public ICommandLineInterface CLI {get; set;}
 
         public event EventHandler RaiseNoActivityEvent;
-        public event EventHandler<ActivityAddedEventArgs> RaiseActivityAddedEvent;
+        public event EventHandler<ActivityEventArgs> RaiseActivityAddedEvent;
         public event EventHandler RaiseApplicationCloseEvent;
 
         private Task MenueTask = null;
@@ -105,7 +105,7 @@ namespace ActivitySampling.Module.View.CLI
             Console.ResetColor();
         }
 
-        private void OnRaiseActivityAddedEvent(ActivityAddedEventArgs e)
+        private void OnRaiseActivityAddedEvent(ActivityEventArgs e)
         {
             RaiseActivityAddedEvent?.Invoke(this, e);
         }
