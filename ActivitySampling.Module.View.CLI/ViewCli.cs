@@ -32,12 +32,14 @@ namespace ActivitySampling.Module.View.CLI
         {
             DeactivateMenu();
             var actualActivity = CLI.ShowQuestion(Question, lastActivity, timeStampOfQuestion, TimeToAnswer);
-            HandleAnswer(actualActivity);
+            HandleAddedAnswer(actualActivity);
             ActivateMenu();
         }
 
-        private void HandleAnswer(string actualActivity)
         {
+        private void HandleAddedAnswer(string actualActivity)
+        {
+            LastAnswer = actualActivity;
             if (String.IsNullOrWhiteSpace(actualActivity))
             {
                 // Leerer String = keine Tätigkeit = kein Eintrag
@@ -46,7 +48,7 @@ namespace ActivitySampling.Module.View.CLI
             else
             {
                 TimeStampOfLastAnswer = DateTime.Now;
-                OnRaiseActivityAddedEvent(new ActivityAddedEventArgs(TimeStampOfLastAnswer, actualActivity));
+                OnRaiseActivityAddedEvent(new ActivityEventArgs(TimeStampOfLastAnswer, actualActivity));
             }
         }
 
