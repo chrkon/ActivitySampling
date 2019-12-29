@@ -16,11 +16,13 @@ namespace ActivitySampling.Module.View.CLI
 
         public TimeSpan TimeToAnswer { get; set; }
         public DateTime TimeStampOfLastAnswer { get; set; }
+        public string LastAnswer { get; set; }
 
         public ICommandLineInterface CLI {get; set;}
 
         public event EventHandler RaiseNoActivityEvent;
         public event EventHandler<ActivityEventArgs> RaiseActivityAddedEvent;
+        public event EventHandler<ActivityEventArgs> RaiseActivityChangedEvent;
         public event EventHandler RaiseApplicationCloseEvent;
 
         private Task MenueTask = null;
@@ -36,7 +38,14 @@ namespace ActivitySampling.Module.View.CLI
             ActivateMenu();
         }
 
+        public void EditLastActivity(DateTime timeStampOfQuestion, string lastActivity)
         {
+            DeactivateMenu();
+            var actualActivity = CLI.ShowQuestion(Question, lastActivity, timeStampOfQuestion, TimeToAnswer);
+            HandleChangedAnswer(actualActivity);
+            ActivateMenu();
+        }
+
         private void HandleAddedAnswer(string actualActivity)
         {
             LastAnswer = actualActivity;
@@ -50,6 +59,11 @@ namespace ActivitySampling.Module.View.CLI
                 TimeStampOfLastAnswer = DateTime.Now;
                 OnRaiseActivityAddedEvent(new ActivityEventArgs(TimeStampOfLastAnswer, actualActivity));
             }
+        }
+
+        private void HandleChangedAnswer(string actualActivity)
+        {
+           OnRaiseActivityChangedEvent(new ActivityEventArgs(TimeStampOfLastAnswer, actualActivity));
         }
 
         public void ActivateMenu()
@@ -67,6 +81,7 @@ namespace ActivitySampling.Module.View.CLI
         private const ConsoleKey CancelKey = ConsoleKey.X;
         private const ConsoleKey HelpKey = ConsoleKey.H;
         private const ConsoleKey AddKey = ConsoleKey.A;
+        private const ConsoleKey EditKey = ConsoleKey.E;
 
         private void MenueHandler(CancellationToken ct)
         {
@@ -86,6 +101,9 @@ namespace ActivitySampling.Module.View.CLI
                             var lastInterval = DateTime.Now - TimeStampOfLastAnswer;
                             AskForActivity(DateTime.Now, "");
                             break;
+                        case EditKey:
+                            EditLastActivity(TimeStampOfLastAnswer, LastAnswer);
+                            break;
                         case CancelKey:
                             OnRaiseApplicationCloseEvent(new EventArgs());
                             break;
@@ -104,12 +122,19 @@ namespace ActivitySampling.Module.View.CLI
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
             CLI.WriteLine("'x' = exit");
+            CLI.WriteLine("'a' = add action");
+            CLI.WriteLine("'e' = exit last action");
             Console.ResetColor();
         }
 
         private void OnRaiseActivityAddedEvent(ActivityEventArgs e)
         {
             RaiseActivityAddedEvent?.Invoke(this, e);
+        }
+
+        private void OnRaiseActivityChangedEvent(ActivityEventArgs e)
+        {
+            RaiseActivityChangedEvent?.Invoke(this, e);
         }
 
         private void OnRaiseNoActivityEvent(EventArgs e)
