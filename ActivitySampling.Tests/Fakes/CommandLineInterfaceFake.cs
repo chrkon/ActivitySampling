@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using ActivitySampling.Interfaces;
 
 namespace ActivitySampling.Tests
 {
@@ -14,7 +11,11 @@ namespace ActivitySampling.Tests
 
         public ConsoleKeyInfo ReadKey(bool intercept = false)
         {
-            ConsoleKeyInfo cki = new ConsoleKeyInfo(char.MinValue, NextInputKey.Value, false, false, false) ;
+            ConsoleKeyInfo cki = new ConsoleKeyInfo();
+            if (NextInputKey.HasValue)
+            {
+                cki = new ConsoleKeyInfo(char.MinValue, NextInputKey.Value, false, false, false);
+            }
             return cki;
         }
 
@@ -22,6 +23,7 @@ namespace ActivitySampling.Tests
         {
             return NextInputString;
         }
+
         public void WriteLine(string text)
         {
             // no action
