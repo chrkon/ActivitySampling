@@ -19,10 +19,12 @@ namespace ActivitySampling.Interfaces
     {
         void Output(string message);
         void AskForActivity(DateTime timeStampOfQuestion, string lastActivity);
+        void EditLastActivity(DateTime timeStampOfQuestion, string lastActivity);
         void ActivateMenu();
         void DeactivateMenu();
         event EventHandler RaiseNoActivityEvent;
         event EventHandler<ActivityEventArgs> RaiseActivityAddedEvent;
+        event EventHandler<ActivityEventArgs> RaiseActivityChangedEvent;
         event EventHandler RaiseApplicationCloseEvent;
     }
 
