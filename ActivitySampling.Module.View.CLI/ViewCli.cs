@@ -41,7 +41,7 @@ namespace ActivitySampling.Module.View.CLI
         public void EditLastActivity(DateTime timeStampOfQuestion, string lastActivity)
         {
             DeactivateMenu();
-            var actualActivity = CLI.ShowQuestion(Question, lastActivity, timeStampOfQuestion, TimeToAnswer);
+            var actualActivity = CLI.ShowLastQuestion(Question, lastActivity, timeStampOfQuestion, TimeToAnswer);
             HandleChangedAnswer(actualActivity);
             ActivateMenu();
         }

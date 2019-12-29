@@ -27,6 +27,15 @@ namespace ActivitySampling.Module.View.CLI
             Console.WriteLine(text);
         }
 
+        public string ShowLastQuestion(string question, string lastActivity, DateTime timeStampOfQuestion, TimeSpan timeToAnswer)
+        {
+            var cl = 0;
+            var ct = Console.CursorTop;
+            if (ct > 1) ct--;
+            Console.SetCursorPosition(cl,ct);
+            return ShowQuestion(question, lastActivity, timeStampOfQuestion, timeToAnswer);
+        }
+
         public string ShowQuestion(string question, string lastActivity, DateTime timeStampOfQuestion, TimeSpan timeToAnswer)
         {
             string actualActivity = string.Empty;

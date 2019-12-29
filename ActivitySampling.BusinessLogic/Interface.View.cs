@@ -35,6 +35,7 @@ namespace ActivitySampling.Interfaces
         ConsoleKeyInfo ReadKey(bool intercept = false);
         string ReadLine();
         string ShowQuestion(string question, string lastActivity, DateTime timeStampOfQuestion, TimeSpan timeToAnswer);
+        string ShowLastQuestion(string question, string lastActivity, DateTime timeStampOfQuestion, TimeSpan timeToAnswer);
         void WriteLine(string text);
     }
 }

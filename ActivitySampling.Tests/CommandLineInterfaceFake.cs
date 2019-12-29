@@ -22,15 +22,19 @@ namespace ActivitySampling.Tests
         {
             return NextInputString;
         }
+        public void WriteLine(string text)
+        {
+            // no action
+        }
 
         public string ShowQuestion(string question, string lastActivity, DateTime timeStampOfQuestion, TimeSpan timeToAnswer)
         {
             return lastActivity;
         }
 
-        public void WriteLine(string text)
+        public string ShowLastQuestion(string question, string lastActivity, DateTime timeStampOfQuestion, TimeSpan timeToAnswer)
         {
-            // no action
+            return lastActivity + " (edited)";
         }
     }
 }

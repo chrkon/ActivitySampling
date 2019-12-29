@@ -27,6 +27,7 @@ namespace ActivitySampling.Application
             schedule.RaiseSchedulerEvent += Schedule_RaiseSchedulerEvent;
 
             view.RaiseActivityAddedEvent += View_RaiseActivityAddedEvent;
+            view.RaiseActivityChangedEvent += View_RaiseActivityChangedEvent;
             view.RaiseNoActivityEvent += View_RaiseNoActivityEvent;
             view.RaiseApplicationCloseEvent += View_RaiseApplicationCloseEvent;
             view.ActivateMenu();
@@ -61,6 +62,14 @@ namespace ActivitySampling.Application
             storage.SaveActivity(e.TimeStamp, Interval, e.Description);
             view.Output($@" ... saved ({DateTime.Now:t})");
         }
+        private void View_RaiseActivityChangedEvent(object sender, ActivityEventArgs e)
+        {
+            LastActivity = e.Description;
+            IStorage storage = new CsvFileStorage();
+            storage.SaveChangedActivity(e.TimeStamp, Interval, e.Description);
+            view.Output($@" ... changed ({e.TimeStamp:t})");
+        }
+
         private void View_RaiseApplicationCloseEvent(object sender, EventArgs e)
         {
             view.DeactivateMenu();

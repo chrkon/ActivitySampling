@@ -14,23 +14,39 @@ namespace ActivitySampling.Module.Storage.CSVFile
         private const string postfixFileName = "activity.csv";
         public void SaveActivity(DateTime timeStamp, TimeSpan interval, string activityDescription)
         {
-            var halfInterval = TimeSpan.FromSeconds(interval.TotalSeconds / 2.0);
-
-            var date = DateTime.Now.ToString("yyyy-MM-dd", DateTimeFormatInfo.InvariantInfo);
-            var filename = Path.Combine(".\\", $"{date}-{postfixFileName}");
-
+            var record = BuildActivityEntry(timeStamp, interval, activityDescription);
+            var filename = BuildFileName(DateTime.Now);
             var records = ReadDataFromFile(filename);
-
-            var record = new
-                {
-                    Start = timeStamp - halfInterval,
-                    Stop = timeStamp + halfInterval,
-                    Activity = activityDescription
-                };
-            
             records.Add(record.Start, record);
-
             SaveDataToFile(filename, records);
+        }
+
+        public void SaveChangedActivity(DateTime timeStamp, TimeSpan interval, string activityDescription)
+        {
+            var record = BuildActivityEntry(timeStamp, interval, activityDescription);
+            var filename = BuildFileName(DateTime.Now);
+            var records = ReadDataFromFile(filename);
+            records[record.Start] = record;
+            SaveDataToFile(filename, records);
+        }
+
+        private static ActivityEntry BuildActivityEntry(DateTime timeStamp, TimeSpan interval, string activityDescription)
+        {
+            var halfInterval = TimeSpan.FromSeconds(interval.TotalSeconds / 2.0);
+            var record = new ActivityEntry
+            {
+                Start = timeStamp - halfInterval,
+                Stop = timeStamp + halfInterval,
+                Activity = activityDescription
+            };
+            return record;
+        }
+
+        private static string BuildFileName(DateTime actualDateTime)
+        {
+            var date = actualDateTime.ToString("yyyy-MM-dd", DateTimeFormatInfo.InvariantInfo);
+            var filename = Path.Combine(".\\", $"{date}-{postfixFileName}");
+            return filename;
         }
 
         private static SortedList<DateTime, object> ReadDataFromFile(string filename)
