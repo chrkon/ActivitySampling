@@ -29,12 +29,12 @@ namespace ActivitySampling.Tests
             // no action
         }
 
-        public string ShowQuestion(string question, string lastActivity, DateTime timeStampOfQuestion, TimeSpan timeToAnswer)
+        public string ShowQuestion(string question, string lastActivity, DateTime timeStampOfQuestion, TimeSpan timeToAnswer, string hint)
         {
             return lastActivity;
         }
 
-        public string ShowLastQuestion(string question, string lastActivity, DateTime timeStampOfQuestion, TimeSpan timeToAnswer)
+        public string ShowLastQuestion(string question, string lastActivity, DateTime timeStampOfQuestion, TimeSpan timeToAnswer, string hint)
         {
             return lastActivity + " (edited)";
         }

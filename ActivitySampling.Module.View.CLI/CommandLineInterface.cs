@@ -27,16 +27,16 @@ namespace ActivitySampling.Module.View.CLI
             Console.WriteLine(text);
         }
 
-        public string ShowLastQuestion(string question, string lastActivity, DateTime timeStampOfQuestion, TimeSpan timeToAnswer)
+        public string ShowLastQuestion(string question, string lastActivity, DateTime timeStampOfQuestion, TimeSpan timeToAnswer, string hint)
         {
             var cl = 0;
             var ct = Console.CursorTop;
             if (ct > 1) ct--;
             Console.SetCursorPosition(cl,ct);
-            return ShowQuestion(question, lastActivity, timeStampOfQuestion, timeToAnswer);
+            return ShowQuestion(question, lastActivity, timeStampOfQuestion, timeToAnswer, hint);
         }
 
-        public string ShowQuestion(string question, string lastActivity, DateTime timeStampOfQuestion, TimeSpan timeToAnswer)
+        public string ShowQuestion(string question, string lastActivity, DateTime timeStampOfQuestion, TimeSpan timeToAnswer, string hint)
         {
             string actualActivity = string.Empty;
             DateTime timeOut = DateTime.Now + timeToAnswer;
@@ -61,7 +61,7 @@ namespace ActivitySampling.Module.View.CLI
                 Console.ForegroundColor = ConsoleColor.DarkGreen;
                 Console.Write($" {lastActivity}");
                 Console.ForegroundColor = ConsoleColor.DarkGray;
-                Console.Write($" [press 'return' to use last activity]");
+                Console.Write($" {hint}");
                 Console.ForegroundColor = ConsoleColor.Gray;
                 Console.Write($" ({timeOut - DateTime.Now:ss}s)");
 

@@ -1,0 +1,6 @@
+{
+  "CultureInfo": "de-DE", 
+  "TimeToAnswer": 25,
+  "DataPath": ".\\",
+  "FileExtension": ".activity.csv"
+}

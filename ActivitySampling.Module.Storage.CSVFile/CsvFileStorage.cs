@@ -6,16 +6,25 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using CsvHelper;
+using CsvHelper.Configuration;
 
 namespace ActivitySampling.Module.Storage.CSVFile
 {
     public class CsvFileStorage : IStorage
     {
-        private const string postfixFileName = "activity.csv";
+        public CsvFileStorage(string baseDataPath, string fileExtension)
+        {
+            BaseDataPath = baseDataPath;
+            FileExtension = fileExtension;
+        }
+
+        public string BaseDataPath { get; set; }
+        public string FileExtension { get; set; }
+
         public void SaveActivity(DateTime timeStamp, TimeSpan interval, string activityDescription)
         {
             var record = BuildActivityEntry(timeStamp, interval, activityDescription);
-            var filename = BuildFileName(DateTime.Now);
+            var filename = BuildFileName(DateTime.Now, BaseDataPath, FileExtension);
             var records = ReadDataFromFile(filename);
             records.Add(record.Start, record);
             SaveDataToFile(filename, records);
@@ -24,7 +33,7 @@ namespace ActivitySampling.Module.Storage.CSVFile
         public void SaveChangedActivity(DateTime timeStamp, TimeSpan interval, string activityDescription)
         {
             var record = BuildActivityEntry(timeStamp, interval, activityDescription);
-            var filename = BuildFileName(DateTime.Now);
+            var filename = BuildFileName(DateTime.Now, BaseDataPath, FileExtension);
             var records = ReadDataFromFile(filename);
             records[record.Start] = record;
             SaveDataToFile(filename, records);
@@ -42,10 +51,10 @@ namespace ActivitySampling.Module.Storage.CSVFile
             return record;
         }
 
-        private static string BuildFileName(DateTime actualDateTime)
+        private static string BuildFileName(DateTime actualDateTime, string path, string extension)
         {
             var date = actualDateTime.ToString("yyyy-MM-dd", DateTimeFormatInfo.InvariantInfo);
-            var filename = Path.Combine(".\\", $"{date}-{postfixFileName}");
+            var filename = Path.Combine($"{path}", $"{date}{extension}");
             return filename;
         }
 
@@ -55,8 +64,9 @@ namespace ActivitySampling.Module.Storage.CSVFile
 
             if (File.Exists(filename))
             {
+                Configuration cnf = new Configuration(CultureInfo.InvariantCulture);
                 using (var reader = new StreamReader(filename))
-                using (var csv = new CsvReader(reader))
+                using (var csv = new CsvReader(reader, cnf))
                 {
                     var typeDef = new
                     {
@@ -77,8 +87,9 @@ namespace ActivitySampling.Module.Storage.CSVFile
 
         private static void SaveDataToFile(string filename, SortedList<DateTime, object> records)
         {
+            Configuration cnf = new Configuration(CultureInfo.InvariantCulture);
             using (var writer = new StreamWriter(filename))
-            using (var csv = new CsvWriter(writer))
+            using (var csv = new CsvWriter(writer, cnf))
             {
                 csv.WriteRecords(records.Values);
             }

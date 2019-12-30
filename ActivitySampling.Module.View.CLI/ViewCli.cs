@@ -8,15 +8,22 @@ namespace ActivitySampling.Module.View.CLI
 {
     public class ViewCLI : IView
     {
+        private readonly TimeSpan defaultTimeToAnswer = new TimeSpan(0,0,25);
         public ViewCLI()
         {
-            TimeToAnswer = TimeSpan.FromSeconds(30.0);
+            Question = "Was machst Du gerade?";
+            TimeToAnswer = TimeSpan.FromSeconds(25);
+            InputHint = "mit [return] die vorherige Antwort übernehmen.";
+            HelpText = "'x' = exit\n'a' = add action\n'e' = edit last activity";
             CLI = new CommandLineInterface();
         }
 
         public TimeSpan TimeToAnswer { get; set; }
         public DateTime TimeStampOfLastAnswer { get; set; }
+        public string Question { get; set; }
+        public string InputHint { get; set; }
         public string LastAnswer { get; set; }
+        public string HelpText { get; set; }
 
         public ICommandLineInterface CLI {get; set;}
 
@@ -28,12 +35,10 @@ namespace ActivitySampling.Module.View.CLI
         private Task MenueTask = null;
         private CancellationTokenSource _cts;
 
-        private const string Question = "Was machst Du gerade?";
-
         public void AskForActivity(DateTime timeStampOfQuestion, string lastActivity)
         {
             DeactivateMenu();
-            var actualActivity = CLI.ShowQuestion(Question, lastActivity, timeStampOfQuestion, TimeToAnswer);
+            var actualActivity = CLI.ShowQuestion(Question, lastActivity, timeStampOfQuestion, TimeToAnswer, InputHint);
             HandleAddedAnswer(actualActivity);
             ActivateMenu();
         }
@@ -41,7 +46,7 @@ namespace ActivitySampling.Module.View.CLI
         public void EditLastActivity(DateTime timeStampOfQuestion, string lastActivity)
         {
             DeactivateMenu();
-            var actualActivity = CLI.ShowLastQuestion(Question, lastActivity, timeStampOfQuestion, TimeToAnswer);
+            var actualActivity = CLI.ShowLastQuestion(Question, lastActivity, timeStampOfQuestion, TimeToAnswer, InputHint);
             HandleChangedAnswer(actualActivity);
             ActivateMenu();
         }
@@ -121,9 +126,7 @@ namespace ActivitySampling.Module.View.CLI
         private void ShowHelpText()
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
-            CLI.WriteLine("'x' = exit");
-            CLI.WriteLine("'a' = add action");
-            CLI.WriteLine("'e' = exit last action");
+            CLI.WriteLine(HelpText);
             Console.ResetColor();
         }
 

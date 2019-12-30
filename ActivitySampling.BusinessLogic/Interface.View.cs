@@ -19,6 +19,12 @@ namespace ActivitySampling.Interfaces
     {
         void Output(string message);
         void AskForActivity(DateTime timeStampOfQuestion, string lastActivity);
+
+        string Question { get; set; }
+        string InputHint { get; set; }
+        TimeSpan TimeToAnswer { get; set; }
+        string HelpText { get; set; }
+
         void EditLastActivity(DateTime timeStampOfQuestion, string lastActivity);
         void ActivateMenu();
         void DeactivateMenu();
@@ -34,8 +40,8 @@ namespace ActivitySampling.Interfaces
         bool KeyAvailable { get; }
         ConsoleKeyInfo ReadKey(bool intercept = false);
         string ReadLine();
-        string ShowQuestion(string question, string lastActivity, DateTime timeStampOfQuestion, TimeSpan timeToAnswer);
-        string ShowLastQuestion(string question, string lastActivity, DateTime timeStampOfQuestion, TimeSpan timeToAnswer);
+        string ShowQuestion(string question, string lastActivity, DateTime timeStampOfQuestion, TimeSpan timeToAnswer, string hint);
+        string ShowLastQuestion(string question, string lastActivity, DateTime timeStampOfQuestion, TimeSpan timeToAnswer, string hint);
         void WriteLine(string text);
     }
 }

@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Globalization;
+using System.IO;
 using System.Runtime.InteropServices.ComTypes;
 using System.Threading;
 using System.Threading.Tasks;
+using ActivitySampling.Application.Properties;
 using ActivitySampling.Interfaces;
 using ActivitySampling.Module.Scheduler.Question;
 using ActivitySampling.Module.Storage.CSVFile;
+using Microsoft.Extensions.Configuration;
 
 namespace ActivitySampling.Application
 {
@@ -15,12 +19,12 @@ namespace ActivitySampling.Application
         [STAThread]
         static void Main(string[] args)
         {
-            Console.WriteLine("Activity Sampling V1");
+            Console.WriteLine(Resources.Program_Main_Activity_Sampling_V1);
 
             _ = RunLogic(args);
 
             Console.WriteLine();
-            Console.WriteLine("Application halted.");
+            Console.WriteLine(Resources.Program_Main_Application_halted_);
         }
 
         static async Task RunLogic(string[] args)
@@ -50,5 +54,6 @@ namespace ActivitySampling.Application
             } 
             return result;
         }
+
     }
 }
