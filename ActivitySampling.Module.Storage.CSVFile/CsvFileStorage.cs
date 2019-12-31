@@ -26,7 +26,7 @@ namespace ActivitySampling.Module.Storage.CSVFile
             var record = BuildActivityEntry(timeStamp, interval, activityDescription);
             var filename = BuildFileName(DateTime.Now, BaseDataPath, FileExtension);
             var records = ReadDataFromFile(filename);
-            records.Add(record.Start, record);
+            records.Add(record.Start.Ticks, record);
             SaveDataToFile(filename, records);
         }
 
@@ -35,7 +35,7 @@ namespace ActivitySampling.Module.Storage.CSVFile
             var record = BuildActivityEntry(timeStamp, interval, activityDescription);
             var filename = BuildFileName(DateTime.Now, BaseDataPath, FileExtension);
             var records = ReadDataFromFile(filename);
-            records[record.Start] = record;
+            records[record.Start.Ticks] = record;
             SaveDataToFile(filename, records);
         }
 
@@ -58,9 +58,9 @@ namespace ActivitySampling.Module.Storage.CSVFile
             return filename;
         }
 
-        private static SortedList<DateTime, object> ReadDataFromFile(string filename)
+        private static SortedList<long, ActivityEntry> ReadDataFromFile(string filename)
         {
-            var records = new SortedList<DateTime, object>();
+            var records = new SortedList<long, ActivityEntry>();
 
             if (File.Exists(filename))
             {
@@ -68,16 +68,15 @@ namespace ActivitySampling.Module.Storage.CSVFile
                 using (var reader = new StreamReader(filename))
                 using (var csv = new CsvReader(reader, cnf))
                 {
-                    var typeDef = new
+                    IEnumerable<ActivityEntry> recs = csv.GetRecords<ActivityEntry>();
+                    foreach (ActivityEntry rec in recs)
                     {
-                        Start = default(DateTime),
-                        Stop = default(DateTime),
-                        Activity = string.Empty
-                    };
-                    var recs = csv.GetRecords(typeDef);
-                    foreach (var rec in recs)
-                    {
-                        records.Add(rec.Start, rec);
+                        long key = rec.Start.Ticks;
+                        if (records.ContainsKey(key))
+                        {
+                            records.Remove(key);
+                        }
+                        records.Add(key, rec);
                     }
                 }
             }
@@ -85,7 +84,7 @@ namespace ActivitySampling.Module.Storage.CSVFile
             return records;
         }
 
-        private static void SaveDataToFile(string filename, SortedList<DateTime, object> records)
+        private static void SaveDataToFile(string filename, SortedList<long, ActivityEntry> records)
         {
             Configuration cnf = new Configuration(CultureInfo.InvariantCulture);
             using (var writer = new StreamWriter(filename))
