@@ -7,6 +7,11 @@
     <ApplicationIcon />
     <Win32Resource />
     <NoWin32Manifest>true</NoWin32Manifest>
+    <Version>1.1.0</Version>
+    <Authors>Dipl. Ing. (FH) Christof Konstantinopoulos, Master of Software Engineering</Authors>
+    <Company>SoftwareDOCK</Company>
+    <Copyright>(c) 2019</Copyright>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
 
   <ItemGroup>

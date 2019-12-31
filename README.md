@@ -1,4 +1,4 @@
-# ActivitySampling V1
+# ActivitySampling V1.1
 A small .net core tool running in a console window.
 It will ask the user every [xx] minutes
 "What is the focus of your actual work" 
