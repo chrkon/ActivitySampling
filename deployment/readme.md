@@ -1,0 +1,1 @@
+the build version of the App "Activity Sampling" is stored into this folder.
