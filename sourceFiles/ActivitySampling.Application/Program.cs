@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.ComTypes;
+using System.Runtime.Versioning;
 using System.Threading;
 using System.Threading.Tasks;
 using ActivitySampling.Application.Properties;
@@ -19,7 +22,9 @@ namespace ActivitySampling.Application
         [STAThread]
         static void Main(string[] args)
         {
-            Console.WriteLine(Resources.Program_Main_Activity_Sampling_V1);
+            Version ver = Assembly.GetExecutingAssembly().GetName().Version;
+            string StartMessage = $"{Resources.Program_Main_Activity_Sampling_V1} ({ver.Major}.{ver.Minor}.{ver.Revision})";
+            Console.WriteLine(StartMessage);
 
             _ = RunLogic(args);
 
