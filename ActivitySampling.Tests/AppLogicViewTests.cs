@@ -1,5 +1,6 @@
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using ActivitySampling.Module.View.CLI;
 using Xunit;
@@ -15,17 +16,48 @@ namespace ActivitySampling.Tests
             Assert.NotNull(sut);
         }
 
-        [Fact(Skip = "Dieser Test funktioniert nicht. Grund noch unbekannt, CKo, 9.11.2019")]
-        public async Task View_CallAskForActivity()
+        [Fact]
+        public async Task View_CallAskForActivity_noInput()
         {
+            AutoResetEvent _eventIsCalled = new AutoResetEvent(false);
             var sut = new ViewCLI();
-            sut.RaiseActivityAddedEvent += (sender, e) => 
-            {
-                Assert.NotEmpty(e.Description); 
-                Assert.Equal("No car",e.Description);
+            sut.CLI = new CommandLineInterfaceFake();
+            sut.TimeToAnswer = TimeSpan.FromMilliseconds(250);
+            sut.RaiseNoActivityEvent += (sender,e ) => _eventIsCalled.Set();
+            sut.AskForActivity(DateTime.Now, "");
+            var wasEventCalled = _eventIsCalled.WaitOne(300);
+            Assert.True(wasEventCalled);
+        }
+
+        [Fact]
+        public async Task View_CallAskForActivity_WithInput()
+        {
+            string receivedActivity = string.Empty;
+            var sut = new ViewCLI();
+            sut.TimeToAnswer = TimeSpan.FromMilliseconds(500);
+            sut.CLI = new CommandLineInterfaceFake();
+            AutoResetEvent _eventIsCalled = new AutoResetEvent(false);
+            sut.RaiseActivityAddedEvent += (sender,e ) => {
+                receivedActivity = e.Description;
+                _eventIsCalled.Set();
             };
-            sut.AskForActivity(DateTime.Now, TimeSpan.FromMinutes(20), "No Activity");
-            await Task.Delay(500);
+
+            string expectedActivity = "last Activity";
+            sut.AskForActivity(DateTime.Now, expectedActivity); 
+            Assert.Equal(expectedActivity, receivedActivity);
+        }
+
+        [Fact]
+        public async Task View_pressKeyX_AppEnds()
+        {
+            AutoResetEvent _eventIsCalled = new AutoResetEvent(false);
+            var sut = new ViewCLI();
+            sut.CLI = new CommandLineInterfaceFake();
+            sut.RaiseApplicationCloseEvent += (sender, e) => _eventIsCalled.Set();
+            sut.ActivateMenu();
+            ((CommandLineInterfaceFake)sut.CLI).NextInputKey = ConsoleKey.X;
+            var wasEventCalled = _eventIsCalled.WaitOne(1000);
+            Assert.True(wasEventCalled);
         }
 
     }

@@ -8,100 +8,52 @@ namespace ActivitySampling.Module.View.CLI
 {
     public class ViewCLI : IView
     {
+        private readonly TimeSpan defaultTimeToAnswer = new TimeSpan(0,0,25);
         public ViewCLI()
         {
-            TimeToAnswer = TimeSpan.FromSeconds(30.0);
-            StartMenue();
+            Question = "Was machst Du gerade?";
+            TimeToAnswer = TimeSpan.FromSeconds(25);
+            InputHint = "mit [return] die vorherige Antwort übernehmen.";
+            HelpText = "'x' = exit\n'a' = add action\n'e' = edit last activity";
+            CLI = new CommandLineInterface();
         }
 
         public TimeSpan TimeToAnswer { get; set; }
-        public DateTime TimeStampOfAnswer { get; set; }
+        public DateTime TimeStampOfLastAnswer { get; set; }
+        public string Question { get; set; }
+        public string InputHint { get; set; }
+        public string LastAnswer { get; set; }
+        public string HelpText { get; set; }
+
+        public ICommandLineInterface CLI {get; set;}
 
         public event EventHandler RaiseNoActivityEvent;
-        public event EventHandler<ActivityAddedEventArgs> RaiseActivityAddedEvent;
+        public event EventHandler<ActivityEventArgs> RaiseActivityAddedEvent;
+        public event EventHandler<ActivityEventArgs> RaiseActivityChangedEvent;
         public event EventHandler RaiseApplicationCloseEvent;
 
         private Task MenueTask = null;
-        private CancellationTokenSource cts;
+        private CancellationTokenSource _cts;
 
-        public void AskForActivity(DateTime timeStampOfQuestion, TimeSpan interval, string lastActivity)
+        public void AskForActivity(DateTime timeStampOfQuestion, string lastActivity)
         {
-            StopMenue();
-            var actualActivity = ShowQuestion(lastActivity, timeStampOfQuestion, interval, TimeToAnswer);
-            HandleAnswer(actualActivity);
-            StartMenue();
+            DeactivateMenu();
+            var actualActivity = CLI.ShowQuestion(Question, lastActivity, timeStampOfQuestion, TimeToAnswer, InputHint);
+            HandleAddedAnswer(actualActivity);
+            ActivateMenu();
         }
 
-        private const string Question = "Was machst Du gerade?";
-        private string ShowQuestion(string lastActivity, DateTime timeStampOfQuestion, TimeSpan workingInterval, TimeSpan timeToAnswer)
+        public void EditLastActivity(DateTime timeStampOfQuestion, string lastActivity)
         {
-            string actualActivity = string.Empty;
-            DateTime timeOut = DateTime.Now + timeToAnswer;
-            DateTime nextBeep = DateTime.Now + TimeSpan.FromSeconds(5);
-
-            var cl = Console.CursorLeft;
-            var ct = Console.CursorTop;
-
-            Console.Beep();
-            Console.Beep();
-
-            while (Console.KeyAvailable == false && DateTime.Now < timeOut)
-            {
-                if (DateTime.Now > nextBeep)
-                {
-                    nextBeep = DateTime.Now + TimeSpan.FromSeconds(5);
-                    Console.Beep();
-                }
-
-                Console.SetCursorPosition(cl, ct);
-                Console.Write($"{Question}");
-                Console.ForegroundColor = ConsoleColor.DarkGreen;
-                Console.Write($" {lastActivity}");
-                Console.ForegroundColor = ConsoleColor.DarkGray;
-                Console.Write($" [press 'return' to use last activity]");
-                Console.ForegroundColor = ConsoleColor.Gray;
-                Console.Write($" ({timeOut - DateTime.Now:ss}s)");
-
-                Console.ResetColor();
-                Console.SetCursorPosition(cl, ct);
-                Console.Write($"{Question} ");
-                Thread.Sleep(250);
-            }
-
-            if (DateTime.Now < timeOut)
-            {
-                Console.SetCursorPosition(cl, ct);
-                Console.Write($"".PadRight(Console.LargestWindowWidth));
-                Console.SetCursorPosition(cl, ct);
-                Console.Write($"{Question} ");
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                string answer = Console.ReadLine();
-                if (String.IsNullOrWhiteSpace(answer))
-                {
-                    actualActivity = lastActivity; // nur Enter gedrückt
-                }
-                else
-                {
-                    actualActivity = answer;
-                } 
-            }
-
-            Console.SetCursorPosition(cl, ct);
-            Console.Write($"".PadRight(Console.LargestWindowWidth));
-            Console.SetCursorPosition(cl, ct);
-            Console.ResetColor();
-            Console.Write($"{Question}");
-            Console.ForegroundColor = ConsoleColor.DarkYellow;
-            Console.Write($" {actualActivity}");
-            Console.ResetColor();
-
-            Console.Beep();
-
-            return actualActivity;
+            DeactivateMenu();
+            var actualActivity = CLI.ShowLastQuestion(Question, lastActivity, timeStampOfQuestion, TimeToAnswer, InputHint);
+            HandleChangedAnswer(actualActivity);
+            ActivateMenu();
         }
 
-        private void HandleAnswer(string actualActivity)
+        private void HandleAddedAnswer(string actualActivity)
         {
+            LastAnswer = actualActivity;
             if (String.IsNullOrWhiteSpace(actualActivity))
             {
                 // Leerer String = keine Tätigkeit = kein Eintrag
@@ -109,65 +61,83 @@ namespace ActivitySampling.Module.View.CLI
             }
             else
             {
-                TimeStampOfAnswer = DateTime.Now;
-                OnRaiseActivityAddedEvent(new ActivityAddedEventArgs(TimeStampOfAnswer, actualActivity));
+                TimeStampOfLastAnswer = DateTime.Now;
+                OnRaiseActivityAddedEvent(new ActivityEventArgs(TimeStampOfLastAnswer, actualActivity));
             }
         }
 
-        private void StartMenue()
+        private void HandleChangedAnswer(string actualActivity)
         {
-            cts = new CancellationTokenSource();
-            MenueTask = Task.Factory.StartNew(() => MenueHandler(cts.Token), cts.Token);
+           OnRaiseActivityChangedEvent(new ActivityEventArgs(TimeStampOfLastAnswer, actualActivity));
         }
 
-        private void StopMenue()
+        public void ActivateMenu()
         {
-            if (cts != null)
-            {
-                cts.Cancel();
-            }
+            _cts?.Cancel();
+            _cts = new CancellationTokenSource();
+            MenueTask = Task.Factory.StartNew(() => MenueHandler(_cts.Token), _cts.Token);
+        }
+
+        public void DeactivateMenu()
+        {
+            _cts?.Cancel();
         }
 
         private const ConsoleKey CancelKey = ConsoleKey.X;
         private const ConsoleKey HelpKey = ConsoleKey.H;
+        private const ConsoleKey AddKey = ConsoleKey.A;
+        private const ConsoleKey EditKey = ConsoleKey.E;
 
         private void MenueHandler(CancellationToken ct)
         {
             while (!ct.IsCancellationRequested)
             {
-                if (Console.KeyAvailable == false)
+                if (!CLI.KeyAvailable)
                 {
                     Thread.Sleep(250);
                 }
                 else
                 {
-                    ConsoleKeyInfo key = Console.ReadKey(true);
-                    var isExitKey = key.Key == CancelKey;
-                    var isHelpKey = key.Key == HelpKey;
-
-                    if (isExitKey)
+                    ConsoleKeyInfo cki = CLI.ReadKey(true);
+                    ConsoleKey key = cki.Key;
+                    switch (key)
                     {
-                        OnRaiseApplicationCloseEvent(new EventArgs());
-                        break;
-                    }
-                    else if (isHelpKey)
-                    {
-                        ShowHelpText();
-                    }
+                        case AddKey:
+                            var lastInterval = DateTime.Now - TimeStampOfLastAnswer;
+                            AskForActivity(DateTime.Now, "");
+                            break;
+                        case EditKey:
+                            EditLastActivity(TimeStampOfLastAnswer, LastAnswer);
+                            break;
+                        case CancelKey:
+                            OnRaiseApplicationCloseEvent(new EventArgs());
+                            break;
+                        case HelpKey:
+                            ShowHelpText();
+                            break;
+                        default:
+                            Console.Beep(500,600);
+                            break;
+                    } 
                 }
             }
-        }
+         }
 
         private void ShowHelpText()
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("'x' = exit");
+            CLI.WriteLine(HelpText);
             Console.ResetColor();
         }
 
-        private void OnRaiseActivityAddedEvent(ActivityAddedEventArgs e)
+        private void OnRaiseActivityAddedEvent(ActivityEventArgs e)
         {
             RaiseActivityAddedEvent?.Invoke(this, e);
+        }
+
+        private void OnRaiseActivityChangedEvent(ActivityEventArgs e)
+        {
+            RaiseActivityChangedEvent?.Invoke(this, e);
         }
 
         private void OnRaiseNoActivityEvent(EventArgs e)
@@ -180,5 +150,9 @@ namespace ActivitySampling.Module.View.CLI
             RaiseApplicationCloseEvent?.Invoke(this, e);
         }
 
+        public void Output(string message)
+        {
+            CLI.WriteLine(message);
+        }
     }
 }
