@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Text;
 
 namespace ActivitySampling.Interfaces
@@ -24,6 +25,8 @@ namespace ActivitySampling.Interfaces
         string InputHint { get; set; }
         TimeSpan TimeToAnswer { get; set; }
         string HelpText { get; set; }
+
+        Rectangle WindowRectangle { get; set; }
 
         void EditLastActivity(DateTime timeStampOfQuestion, string lastActivity);
         void ActivateMenu();

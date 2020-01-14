@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using ActivitySampling.Interfaces;
 using ActivitySampling.Module.Scheduler.Question;
@@ -24,14 +26,18 @@ namespace ActivitySampling.Application
 
         private readonly string _baseDataPath;
         private readonly string _fileExtension;
+        private const string settingsFile = "ActivitySampling.json";
 
-        public static IConfiguration Configuration { get; } = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("activitySampling.json", optional: false, reloadOnChange: true)
-            .Build();   
+        public IConfiguration Configuration = null;
 
-        public BusinessLogic()
+
+        public BusinessLogic(IView view)
         {
+            Configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile(settingsFile, optional: false, reloadOnChange: true)
+                .Build();
+
             _baseDataPath = Path.GetFullPath(Configuration["DataPath"]);
             _fileExtension = Configuration["FileExtension"];
 
@@ -40,12 +46,12 @@ namespace ActivitySampling.Application
             CultureInfo.CurrentUICulture = new CultureInfo(culture, true);
 
             _schedule = new QuestionScheduler();
-            _view = new ViewCLI();
+            _view = view;
+
             _view.Question = Properties.Resources.QuestionText;
             _view.InputHint = Properties.Resources.InputHint;
             _view.HelpText = Properties.Resources.HelpText;
             _view.TimeToAnswer = GetTimeToAnswerFromString(Configuration["TimeToAnswer"]);
-
 
             _schedule.RaiseSchedulerEvent += Schedule_RaiseSchedulerEvent;
 
@@ -102,10 +108,11 @@ namespace ActivitySampling.Application
         {
             _view.DeactivateMenu();
             _view.Output($@"{Properties.Resources.BL_ScreenEndingInfo}");
+            
             IStorage storage = new CsvFileStorage(_baseDataPath, _fileExtension);
             storage.SaveActivity(DateTime.Now, TimeSpan.Zero, $@"{Properties.Resources.BL_EndMessage}");
-            _schedule.Stop();
-        }
 
+            _schedule.Stop();            
+        }
     }
 }

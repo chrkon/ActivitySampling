@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,6 +27,11 @@ namespace ActivitySampling.Module.View.CLI
         public string HelpText { get; set; }
 
         public ICommandLineInterface CLI {get; set;}
+        public Rectangle WindowRectangle
+        {
+            get => CliPositioning.GetRectangle();
+            set => CliPositioning.SetRectangle(value);
+        }
 
         public event EventHandler RaiseNoActivityEvent;
         public event EventHandler<ActivityEventArgs> RaiseActivityAddedEvent;
