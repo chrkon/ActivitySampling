@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace ActivitySampling.Module.View.CLI
+namespace ActivitySampling.Module.View.CLI.Windows
 {
     class CliPositioning
     {
