@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,6 +27,11 @@ namespace ActivitySampling.Module.View.CLI
         public string HelpText { get; set; }
 
         public ICommandLineInterface CLI {get; set;}
+        public Rectangle WindowRectangle
+        {
+            get => GetWindowRectOSDependent(Environment.OSVersion.Platform);
+            set => SetWindowRectOSDependent(Environment.OSVersion.Platform, value);
+        }
 
         public event EventHandler RaiseNoActivityEvent;
         public event EventHandler<ActivityEventArgs> RaiseActivityAddedEvent;
@@ -154,5 +160,56 @@ namespace ActivitySampling.Module.View.CLI
         {
             CLI.WriteLine(message);
         }
+
+        private Rectangle GetWindowRectOSDependent(PlatformID operatingSystemPlatform)
+        {
+            var rectangle = new Rectangle(50, 50, 590, 400);
+            switch (operatingSystemPlatform)
+            {
+                case PlatformID.Win32S:
+                    break;
+                case PlatformID.Win32Windows:
+                    break;
+                case PlatformID.Win32NT:
+                    rectangle = Windows.CliPositioning.GetRectangle();
+                    break;
+                case PlatformID.WinCE:
+                    break;
+                case PlatformID.Unix:
+                    break;
+                case PlatformID.Xbox:
+                    break;
+                case PlatformID.MacOSX:
+                    break;
+                default:
+                    break;
+            }
+            return rectangle;
+        }
+
+        private void SetWindowRectOSDependent(PlatformID operatingSystemPlatform, Rectangle value)
+        {
+            switch (operatingSystemPlatform)
+            {
+                case PlatformID.Win32S:
+                    break;
+                case PlatformID.Win32Windows:
+                    break;
+                case PlatformID.Win32NT:
+                    Windows.CliPositioning.SetRectangle(value);
+                    break;
+                case PlatformID.WinCE:
+                    break;
+                case PlatformID.Unix:
+                    break;
+                case PlatformID.Xbox:
+                    break;
+                case PlatformID.MacOSX:
+                    break;
+                default:
+                    break;
+            }
+        }
+
     }
 }
