@@ -30,7 +30,7 @@ namespace ActivitySampling.Application
             _view = new ViewCLI();
 
             Rectangle windowRectangle;
-            windowRectangle = loadWindowPosition(windowPosFile);
+            windowRectangle = LoadWindowPosition(windowPosFile);
             _view.WindowRectangle = windowRectangle;
 
             Version ver = Assembly.GetExecutingAssembly().GetName().Version;
@@ -40,7 +40,7 @@ namespace ActivitySampling.Application
             _ = RunLogic(args, _view);
 
             windowRectangle = _view.WindowRectangle;
-            saveWindowPosition(windowRectangle, windowPosFile);
+            SaveWindowPosition(windowRectangle, windowPosFile);
 
             Console.WriteLine();
             Console.WriteLine(Resources.Program_Main_Application_halted_);
@@ -74,12 +74,14 @@ namespace ActivitySampling.Application
             return result;
         }
 
-        private static void saveWindowPosition(Rectangle data, string file)
+        private static void SaveWindowPosition(Rectangle data, string file)
         {
             try
             {
-                var jsonOptions = new JsonSerializerOptions();
-                jsonOptions.WriteIndented = true;
+                var jsonOptions = new JsonSerializerOptions
+                {
+                    WriteIndented = true
+                };
 
                 var text = JsonSerializer.Serialize<Rectangle>(data, jsonOptions);
                 var filename = Path.Combine(Directory.GetCurrentDirectory(), file);
@@ -91,7 +93,7 @@ namespace ActivitySampling.Application
             }
         }
 
-        private static Rectangle loadWindowPosition(string file)
+        private static Rectangle LoadWindowPosition(string file)
         {
             var rect = new Rectangle(50, 50, 640, 500);
             try

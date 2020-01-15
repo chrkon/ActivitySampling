@@ -9,7 +9,6 @@ namespace ActivitySampling.Module.View.CLI
 {
     public class ViewCLI : IView
     {
-        private readonly TimeSpan defaultTimeToAnswer = new TimeSpan(0,0,25);
         public ViewCLI()
         {
             Question = "Was machst Du gerade?";
@@ -38,7 +37,6 @@ namespace ActivitySampling.Module.View.CLI
         public event EventHandler<ActivityEventArgs> RaiseActivityChangedEvent;
         public event EventHandler RaiseApplicationCloseEvent;
 
-        private Task MenueTask = null;
         private CancellationTokenSource _cts;
 
         public void AskForActivity(DateTime timeStampOfQuestion, string lastActivity)
@@ -81,7 +79,7 @@ namespace ActivitySampling.Module.View.CLI
         {
             _cts?.Cancel();
             _cts = new CancellationTokenSource();
-            MenueTask = Task.Factory.StartNew(() => MenueHandler(_cts.Token), _cts.Token);
+            _ = Task.Factory.StartNew(() => MenueHandler(_cts.Token), _cts.Token);
         }
 
         public void DeactivateMenu()
@@ -109,7 +107,6 @@ namespace ActivitySampling.Module.View.CLI
                     switch (key)
                     {
                         case AddKey:
-                            var lastInterval = DateTime.Now - TimeStampOfLastAnswer;
                             AskForActivity(DateTime.Now, "");
                             break;
                         case EditKey:

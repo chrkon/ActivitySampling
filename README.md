@@ -1,4 +1,4 @@
-# ActivitySampling V1.1
+# ActivitySampling V1.2
 A small .net core tool running in a console window.
 It will ask the user every [xx] minutes
 "What is the focus of your actual work" 
@@ -35,6 +35,11 @@ The follwing parameters are defined in the configuration file
 ### Localization
 The Programm is already localized for english and german culture.  
 To add another culture just add the resource file.
+
+### Window Positioning (since V1.2)
+The last position of the window is stored and will be used on the next start. 
+The data is stored as Json Format in the file "ActivitySampling.Window.json"
+At the moment this feature is only usable on Windows. 
 
 ---
 
