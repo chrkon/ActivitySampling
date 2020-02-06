@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace ActivitySampling.Module.View.CLI
 {
@@ -27,6 +28,49 @@ namespace ActivitySampling.Module.View.CLI
             Console.WriteLine(text);
         }
 
+        public async void Beep()
+        {
+            // Console.Beep();
+
+            var cposX = Console.CursorLeft;
+            var cposY = Console.CursorTop;
+            var previousBackColor = Console.BackgroundColor;
+            var previousForegroundColor = Console.ForegroundColor;
+
+            await Task.Run(() => ShowBlinkingBar(5, cposX, cposY+2));
+
+            Console.SetCursorPosition(cposX, cposY);
+            Console.BackgroundColor = previousBackColor;
+            Console.ForegroundColor = previousForegroundColor;
+            Console.Write("                    ");
+            Console.SetCursorPosition(cposX, cposY);
+        }
+
+        private void ShowBlinkingBar(int secondsToBlink, int x, int y)
+        {
+            var previousBackColor = Console.BackgroundColor;
+            var previousForegroundColor = Console.ForegroundColor;
+
+            var start = DateTime.Now;
+            var stop = DateTime.Now + TimeSpan.FromSeconds(secondsToBlink);
+            while (DateTime.Now < stop)
+            {
+                Task.Delay(250).Wait();
+                Console.SetCursorPosition(x, y);
+                Console.BackgroundColor = ConsoleColor.DarkYellow;
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.Write("    ----    ----    ");
+                Console.SetCursorPosition(x, y);
+                Task.Delay(500).Wait();
+                Console.BackgroundColor = previousBackColor;
+                Console.ForegroundColor = previousForegroundColor;
+                Console.Write("    ----    ----    ");
+                Console.SetCursorPosition(x, y);
+                Task.Delay(250).Wait();
+            }
+        }
+
+
         public string ShowLastQuestion(string question, string lastActivity, DateTime timeStampOfQuestion, TimeSpan timeToAnswer, string hint)
         {
             var cl = 0;
@@ -45,15 +89,15 @@ namespace ActivitySampling.Module.View.CLI
             var cl = Console.CursorLeft;
             var ct = Console.CursorTop;
 
-            Console.Beep();
-            Console.Beep();
+            Beep();
+            Beep();
 
             while (this.KeyAvailable == false && DateTime.Now < timeOut)
             {
                 if (DateTime.Now > nextBeep)
                 {
                     nextBeep = DateTime.Now + TimeSpan.FromSeconds(5);
-                    Console.Beep();
+                    Beep();
                 }
 
                 Console.SetCursorPosition(cl, ct);
@@ -98,7 +142,7 @@ namespace ActivitySampling.Module.View.CLI
             Console.Write($" {actualActivity}");
             Console.ResetColor();
 
-            Console.Beep();
+            Beep();
 
             return actualActivity;
         }
